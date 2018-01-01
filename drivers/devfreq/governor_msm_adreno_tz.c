@@ -410,6 +410,14 @@ static inline int devfreq_get_freq_level(struct devfreq *devfreq,
 	return -EINVAL;
 }
 
+//static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
+
+#ifdef CONFIG_SIMPLE_GPU_ALGORITHM
+extern int simple_gpu_active;
+extern int simple_gpu_algorithm(int level, int *val,
+				struct devfreq_msm_adreno_tz_data *priv);
+#endif
+
 static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 {
 	int result = 0;
@@ -488,6 +496,18 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 	} else {
 		unsigned int refresh_rate = dsi_panel_get_refresh_rate();
 
+#ifdef CONFIG_SIMPLE_GPU_ALGORITHM
+		if (simple_gpu_active) {
+			simple_gpu_algorithm(level, &val, priv);
+		} else {
+			scm_data[0] = level;
+			scm_data[1] = priv->bin.total_time;
+			scm_data[2] = priv->bin.busy_time;
+			scm_data[3] = context_count;
+			__secure_tz_update_entry3(scm_data, sizeof(scm_data),
+						&val, sizeof(val), priv);
+		}
+#else
 		scm_data[0] = level;
 		scm_data[1] = priv->bin.total_time;
 		if (refresh_rate > 60)
@@ -497,6 +517,7 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 		scm_data[3] = context_count;
 		__secure_tz_update_entry3(scm_data, sizeof(scm_data),
 					&val, sizeof(val), priv);
+#endif
 	}
 #if 0
 	priv->bin.total_time = 0;
