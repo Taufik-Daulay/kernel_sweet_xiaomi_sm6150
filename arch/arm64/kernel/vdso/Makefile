@@ -29,6 +29,8 @@ CFLAGS_vgettimeofday.o = -O3
 else
 CFLAGS_vgettimeofday.o = -O2
 CFLAGS_vgettimeofday.o += -mcmodel=tiny
+else
+ccflags-y += $(DISABLE_LTO)
 endif
 
 CFLAGS_REMOVE_vgettimeofday.o += $(CC_FLAGS_SCS)
