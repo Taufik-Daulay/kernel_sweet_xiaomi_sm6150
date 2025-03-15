@@ -494,8 +494,7 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 			priv->bin.busy_time > CEILING) {
 		val = -1 * level;
 	} else {
-		unsigned int refresh_rate = dsi_panel_get_refresh_rate();
-
+		
 #ifdef CONFIG_SIMPLE_GPU_ALGORITHM
 		if (simple_gpu_active) {
 			simple_gpu_algorithm(level, &val, priv);
@@ -508,6 +507,8 @@ static int tz_get_target_freq(struct devfreq *devfreq, unsigned long *freq)
 						&val, sizeof(val), priv);
 		}
 #else
+        unsigned int refresh_rate = dsi_panel_get_refresh_rate();
+		
 		scm_data[0] = level;
 		scm_data[1] = priv->bin.total_time;
 		if (refresh_rate > 60)
