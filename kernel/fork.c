@@ -2267,20 +2267,20 @@ long _do_fork(unsigned long clone_flags,
 		switch (kp_active_mode()) {
 		case 0:
 		case 2:
-			cpu_input_boost_kick_max(50);
-			devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 50);
+			cpu_input_boost_kick_max(60);
+			devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 60);
 			break;
 		case 3:
-			cpu_input_boost_kick_max(75);
-			devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 75);
+			cpu_input_boost_kick_max(90);
+			devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 90);
 			break;
 		default:
 			break;
 		}
 #else
-		/* Boost DDR bus to the max for 50 ms when userspace launches an app */
-		cpu_input_boost_kick_max(50);
-		devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 50);
+		/* Boost DDR bus to the max for 90 ms when userspace launches an app */
+		cpu_input_boost_kick_max(90);
+		devfreq_boost_kick_max(DEVFREQ_CPU_LLCC_DDR_BW, 90);
 #endif
 	}
 
