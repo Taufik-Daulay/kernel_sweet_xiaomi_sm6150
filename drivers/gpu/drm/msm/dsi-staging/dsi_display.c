@@ -98,9 +98,11 @@ void dsi_display_panel_gamma_mode_change(struct dsi_display *display,
 
 	if (adj_mode->timing.refresh_rate == 120)
 		rc = panel_disp_param_send_lock(display->panel, DISPPARAM_BC_120HZ);
+	else if (adj_mode->timing.refresh_rate == 90)
+		rc = panel_disp_param_send_lock(display->panel, DISPPARAM_BC_90HZ);
 	else if (adj_mode->timing.refresh_rate == 60)
 		rc = panel_disp_param_send_lock(display->panel, DISPPARAM_BC_60HZ);
-
+	
 	if (rc)
 		pr_err("%s: send cmds failed...", __func__);
 	else
@@ -7088,7 +7090,10 @@ int dsi_display_set_mode(struct dsi_display *display,
 		pr_err("[%s] failed to set mode\n", display->name);
 		goto error;
 	}
-
+    
+    if (adj_mode.timing.refresh_rate == 90)
+ 		dsi_display_panel_gamma_mode_change(display, &adj_mode);
+ 		
 	if (adj_mode.timing.refresh_rate == 60)
 		dsi_display_panel_gamma_mode_change(display, &adj_mode);
 
